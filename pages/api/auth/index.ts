@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-const KEY = "jvmhgjkwcezmob:f9ff6b500c0280d3361a8b8c2024657a166046265584fc6fd2616c91c2b25e5b";
-
 const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
+
+const KEY = "jvmhgjkwcezmob:f9ff6b500c0280d3361a8b8c2024657a166046265584fc6fd2616c91c2b25e5b";
+
 const login = async  (_req: NextApiRequest, res: NextApiResponse) => {   
     const {email,password}=_req.body;
     const userFind= await prisma.user.findUnique({
@@ -12,8 +13,8 @@ const login = async  (_req: NextApiRequest, res: NextApiResponse) => {
         email: email
       }
     })
-  if(!userFind){res.status(400).json({ statusCode: 400, message: "El usuario no existe" })
-  }else{
+  if(!userFind){ return res.status(400).json({ statusCode: 400, message: "El usuario no existe" })}
+  
     const passwordIsValid = await bcrypt.compareSync(password,userFind.password);
      try {
     if(passwordIsValid) {
@@ -27,7 +28,7 @@ const login = async  (_req: NextApiRequest, res: NextApiResponse) => {
       payload,
       KEY,
       {
-        expiresIn: 3600, // 1 year in seconds
+        expiresIn: 3600, // 1 hr in seconds
       },
       (err,token: any) => {
         /* Send succes with token */
@@ -38,14 +39,14 @@ const login = async  (_req: NextApiRequest, res: NextApiResponse) => {
       },
     );
     }else{
-      res.status(400).json({ statusCode: 400, message: "La contraseña no es válida" })
+      res.status(404).json({ statusCode: 404, message: "La contraseña no es válida" })
     }
        
        } catch (err) {
        res.status(500).json({ statusCode: 500, message: err.message })
      }
    }
-  }
+  
 
   export default login
    

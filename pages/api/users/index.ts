@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client';
-
-const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
+const bcrypt = require("bcrypt");
+
 
 const signUp = async  (_req: NextApiRequest, res: NextApiResponse) => {
     
@@ -14,7 +14,7 @@ const signUp = async  (_req: NextApiRequest, res: NextApiResponse) => {
     const createUser = await prisma.user.create(
     {
         data: {
-          email: email,
+          email,
           password: hashedPassword,
         },
       })
