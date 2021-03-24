@@ -13,7 +13,7 @@ const login = async  (_req: NextApiRequest, res: NextApiResponse) => {
         email: email
       }
     })
-  if(!userFind){ return res.status(400).json({ statusCode: 400, message: "El usuario no existe" })}
+  if(!userFind){ return res.status(404).json({ statusCode: 404, message: "El usuario no existe" })}
   
     const passwordIsValid = await bcrypt.compareSync(password,userFind.password);
      try {
